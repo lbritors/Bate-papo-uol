@@ -23,18 +23,34 @@ function deuErro(erro) {
     prompt("Usuário com mesmo nome online. Digite um novo nome");
 }
 
-function VerificaConexao() {
+function verificaConexao() {
     const response = axios.post("https://mock-api.driven.com.br/api/v6/uol/status", usuario);
     response.then(processarResponse);
     response.catch(deuErro);
     return response;
 }
 
+let idInterval = 0; 
 function mantemConexao() {
-    setInterval(VerificaConexao, 5000);
+    idInterval = setInterval(verificaConexao, 5000);
+    return idInterval;
 }
-let idInterval = mantemConexao();
-console.log(idInterval);
+function desfazConexao() {
+    clearInterval(idInterval);
+}
+
+function buscarMensagens() {
+    const promise = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages");
+    promise.then(acessarMensagens);
+    promise.catch(erroAoBuscarMensagens);
+}
+
+function acessarMensagens(resposta) {
+    resposta = resposta.data;
+    console.log(resposta);
+    return resposta;
+}
+buscarMensagens();
 
 function criaMensagem() {
     const container = document.querySelector(".container-mensagens");
