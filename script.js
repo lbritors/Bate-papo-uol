@@ -1,4 +1,3 @@
-console.log(axios);
 
 function nomeUsuario() {
     let nome = prompt("Digite o nome do usuário: ");
@@ -15,7 +14,6 @@ mandaRequisiçãoNome();
 
 function processarResponse(resposta) {
     console.log(resposta);
-    console.log(resposta.data);
 }
 
 function deuErro(erro) {
@@ -50,7 +48,30 @@ function acessarMensagens(resposta) {
     console.log(resposta);
     return resposta;
 }
-buscarMensagens();
+
+function erroAoBuscarMensagens(erro) {
+    console.log(erro);
+}
+
+const mensagem = {from: user, to: "Todos", text: "oi", type: "message"};
+function enviarMensagens() {
+    const promise = axios.post("https://mock-api.driven.com.br/api/v6/uol/messages", mensagem);
+    promise.then(mensagemEnviada);
+    promise.catch(erroAoenviarMensagem);
+}
+
+function mensagemEnviada(resposta) {
+    buscarMensagens();
+}
+
+function erroAoenviarMensagem(erro) {
+    console.log("Erro ao enviar mensagem! Tente novamente.");
+}
+
+enviarMensagens();
+
+
+
 
 function criaMensagem() {
     const container = document.querySelector(".container-mensagens");
