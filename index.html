@@ -16,18 +16,16 @@
         <img src="./imagens/logo 1.png" alt="logo-bate-papo">
         <ion-icon name="people"></ion-icon>
     </header>
-    <main>
+    <div class="main">
         <div class="container-mensagens">
-            <div class="mensagem">
-                <span>hora</span>
-                <span>nome</span>
-                <span>para</span>
-            </div>
+            
         </div>
-    </main>
+    </div>
     <footer>
-        <div class="mensagem"></div>
-        <ion-icon name="paper-plane-outline"></ion-icon>
+        <div class="escrita">
+            <input type="text" placeholder="Escreva aqui...">
+        </div>
+        <ion-icon class="enviar"  onclick="enviarMensagens()" name="paper-plane-outline"></ion-icon>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>

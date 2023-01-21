@@ -5,13 +5,17 @@
 body {
     width: 375px;
     height: 670px;
+    display: flex;
+    flex-direction: column;
+    background-color: aquamarine;
     
 }
-main {
+body .main {
     width: 100%;
+    height: 100%;
     background-color:#F3F3F3;
     display: flex;
-    height: 670px;
+    flex-direction: column; 
 }
 
 header {
@@ -26,6 +30,7 @@ header {
     top: 0;
     left: 0;
     padding: 0 22px 0 22px;
+    margin-bottom: 20px;
 
 }
 header img {
@@ -36,20 +41,45 @@ header ion-icon {
     font-size: 43px;
 }
 
-main .container-mensagens {
+.main .container-mensagens {
+    width: 100%;
+    height: 100%;
     display:flex;
+    flex-direction: column;
+    padding: 20px 2px 5px 2px;
+    margin-top: 60px;
+    overflow-y: scroll;
+}
+.main .container-mensagens ul {
+    display: flex;
     flex-direction: column;
 }
 
-main .container-mensagens .mensagem {
+.main .container-mensagens .mensagem li{
     width: 100%;
-    height: 49px;
-    background-color: aqua;
+    min-height: 35px;
+    height: fit-content;
+    margin: 3px 0;
+    display: flex;
+    flex-wrap: wrap;
 }
+.mensagem .status {
+    background-color: #DCDCDC;
+}
+.mensagem .message {
+    background-color: white;
+}
+.message .privado {
+    background-color: #FFDEDE;
+}
+.mensagem li .time {
+    color:#AAAAAA;
+}
+
 
 footer {
     width: 100%;
-    height: 80px;
+    min-height: 80px;
     background-color: white;
     display:flex;
     justify-content: space-between;
@@ -66,7 +96,17 @@ footer ion-icon {
     position: absolute;
     right: 20px;
 }
-footer .mensagem {
+footer .escrita {
     height: 30px;
     width: 145px;
+}
+
+::placeholder {
+    font-style: italic;
+    font-weight: 400;
+    color: black;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    border: none white;
 }

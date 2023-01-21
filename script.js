@@ -1,9 +1,15 @@
+let idAtualizarMensagem = 0;
+let idIntervalConexao = 0; 
+let mensagensChat = [];
+let user = nomeUsuario();
+let inputMsg = document.querySelector("input").value;
+
+
 
 function nomeUsuario() {
     let nome = prompt("Digite o nome do usuário: ");
     return nome;
 }
-const user = nomeUsuario();
 const usuario = { name: user };
 function mandaRequisiçãoNome() {
     const response = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants", usuario);
@@ -28,13 +34,12 @@ function verificaConexao() {
     return response;
 }
 
-let idInterval = 0; 
 function mantemConexao() {
-    idInterval = setInterval(verificaConexao, 5000);
-    return idInterval;
+    idIntervalConexao = setInterval(verificaConexao, 5000);
+    return idIntervalConexao;
 }
 function desfazConexao() {
-    clearInterval(idInterval);
+    clearInterval(idIntervalConexao);
 }
 
 function buscarMensagens() {
@@ -44,45 +49,49 @@ function buscarMensagens() {
 }
 
 function acessarMensagens(resposta) {
-    resposta = resposta.data;
-    console.log(resposta);
-    return resposta;
+    mensagensChat = resposta.data;
+    console.log(mensagensChat);
+    mostrarMensagens(mensagensChat);   
 }
-
 function erroAoBuscarMensagens(erro) {
-    console.log(erro);
+    console.log("Erro ao buscar mensagens :(")
 }
 
-const mensagem = {from: user, to: "Todos", text: "oi", type: "message"};
+buscarMensagens();
+function atualizarMensagens() {
+    idAtualizarMensagem = setInterval(buscarMensagens, 4000);
+    return idAtualizarMensagem;
+}
 function enviarMensagens() {
+    let mensagem = {time: user, to: "Todos", from: inputMsg, type: "message"};
     const promise = axios.post("https://mock-api.driven.com.br/api/v6/uol/messages", mensagem);
     promise.then(mensagemEnviada);
     promise.catch(erroAoenviarMensagem);
 }
 
 function mensagemEnviada(resposta) {
-    buscarMensagens();
+    const enviar = document.querySelector(".enviar");
+    enviar.addEventListener("click", atualizarMensagens);  
 }
 
 function erroAoenviarMensagem(erro) {
     console.log("Erro ao enviar mensagem! Tente novamente.");
 }
 
-enviarMensagens();
-
-
-
-
-function criaMensagem() {
+function mostrarMensagens(lista) {
     const container = document.querySelector(".container-mensagens");
-    const template = `
-    <div class="mensagem">
-                <span>hora</span>
-                <span>${usuario}</span>
-                <span>para</span>
-            </div>
-    `;
-    
-    container.innerHTML = innerHTML + template;
-    
+    const mensagem = document.createElement("ul");
+    container.appendChild(mensagem);
+    mensagem.classList.add("mensagem");
+    lista = mensagensChat;
+    for (let i = 0; i < mensagensChat.length; i++) {
+        if (mensagensChat[i].type === "message") {
+            mensagem.innerHTML += `<li class = "message"> <span class="time"> <p>(${mensagensChat[i].time})&nbsp</p> </span><span>${mensagensChat[i].from} para Todos &nbsp</span><span>${mensagensChat[i].text}</span></li>`;
+        } else if (mensagensChat[i].type === "status") {
+            mensagem.innerHTML += `<li class = "status"><span class="time"> <p>(${mensagensChat[i].time})&nbsp</p> </span><span>${mensagensChat[i].from} &nbsp</span><span>${mensagensChat[i].text}</span></li> `;
+        } else if (mensagem[i].type === "private-message") {
+            mensagem.innerHTML += `<li class = "privado" <span class="time"> <p>(${mensagensChat[i].time})&nbsp</p> </span><span>${mensagensChat[i].from} &nbsp</span><span>${mensagensChat[i].text}</span></li> `;
+        }
+        
+    }
 }
