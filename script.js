@@ -33,13 +33,6 @@ function verificaConexao() {
     return response;
 }
 
-function mantemConexao() {
-    idIntervalConexao = setInterval(verificaConexao, 5000);
-    return idIntervalConexao;
-}
-function desfazConexao() {
-    clearInterval(idIntervalConexao);
-}
 
 function buscarMensagens() {
     const promise = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages");
@@ -51,6 +44,7 @@ function acessarMensagens(resposta) {
     mensagensChat = resposta.data;
     console.log(mensagensChat);  
     mostrarMensagens();
+    mostrarUltima();
 }
 function erroAoBuscarMensagens(erro) {
     console.log("Erro ao buscar mensagens :(")
@@ -65,7 +59,7 @@ function enviarMensagens() {
     let inputMsg = document.querySelector("input").value;
     let mensagem = { from: user, to: "Todos", text: inputMsg, type: "message" };
     const enviar = document.querySelector(".enviar");
-    enviar.addEventListener("click", atualizarMensagens); 
+    enviar.addEventListener("click", mostrarUltima); 
     const promise = axios.post("https://mock-api.driven.com.br/api/v6/uol/messages", mensagem);
     console.log(mensagem);
     document.querySelector("input").value = "";
@@ -76,7 +70,8 @@ function enviarMensagens() {
 
 function mensagemEnviada(resposta) {
     console.log("Enviou!");
-    atualizarMensagens();
+    buscarMensagens();
+    verificaConexao();
 }
 
 function mostrarUltima() {
@@ -86,7 +81,7 @@ function mostrarUltima() {
 
 function erroAoenviarMensagem(erro) {
     console.log("Erro ao enviar mensagem! Tente novamente.");
-    window.location.reload;
+    window.location.reload();
 }
 
 function mostrarMensagens(lista) {
@@ -95,7 +90,7 @@ function mostrarMensagens(lista) {
     container.appendChild(mensagem);
     mensagem.classList.add("mensagem");
     
-    
+    mensagem.innerHTML = " ";
     lista = mensagensChat;
     for (let i = 0; i < mensagensChat.length; i++) {
         if (mensagensChat[i].type === "message") {
