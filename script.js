@@ -2,7 +2,6 @@ let idAtualizarMensagem = 0;
 let idIntervalConexao = 0; 
 let mensagensChat = [];
 let user = nomeUsuario();
-let inputMsg = document.querySelector("input").value;
 
 
 
@@ -19,7 +18,7 @@ function mandaRequisiçãoNome() {
 mandaRequisiçãoNome();
 
 function processarResponse(resposta) {
-    console.log(resposta);
+    buscarMensagens();
 }
 
 function deuErro(erro) {
@@ -50,32 +49,44 @@ function buscarMensagens() {
 
 function acessarMensagens(resposta) {
     mensagensChat = resposta.data;
-    console.log(mensagensChat);
-    mostrarMensagens(mensagensChat);   
+    console.log(mensagensChat);  
+    mostrarMensagens();
 }
 function erroAoBuscarMensagens(erro) {
     console.log("Erro ao buscar mensagens :(")
 }
 
-buscarMensagens();
+
 function atualizarMensagens() {
-    idAtualizarMensagem = setInterval(buscarMensagens, 4000);
+    idAtualizarMensagem = setInterval(buscarMensagens, 3000);
     return idAtualizarMensagem;
 }
 function enviarMensagens() {
-    let mensagem = {time: user, to: "Todos", from: inputMsg, type: "message"};
+    let inputMsg = document.querySelector("input").value;
+    let mensagem = { from: user, to: "Todos", text: inputMsg, type: "message" };
+    const enviar = document.querySelector(".enviar");
+    enviar.addEventListener("click", atualizarMensagens); 
     const promise = axios.post("https://mock-api.driven.com.br/api/v6/uol/messages", mensagem);
+    console.log(mensagem);
+    document.querySelector("input").value = "";
+    
     promise.then(mensagemEnviada);
     promise.catch(erroAoenviarMensagem);
 }
 
 function mensagemEnviada(resposta) {
-    const enviar = document.querySelector(".enviar");
-    enviar.addEventListener("click", atualizarMensagens);  
+    console.log("Enviou!");
+    atualizarMensagens();
+}
+
+function mostrarUltima() {
+    const ultima = document.querySelector("ul");
+    ultima.lastElementChild.scrollIntoView();
 }
 
 function erroAoenviarMensagem(erro) {
     console.log("Erro ao enviar mensagem! Tente novamente.");
+    window.location.reload;
 }
 
 function mostrarMensagens(lista) {
@@ -83,15 +94,15 @@ function mostrarMensagens(lista) {
     const mensagem = document.createElement("ul");
     container.appendChild(mensagem);
     mensagem.classList.add("mensagem");
+    
+    
     lista = mensagensChat;
     for (let i = 0; i < mensagensChat.length; i++) {
         if (mensagensChat[i].type === "message") {
-            mensagem.innerHTML += `<li class = "message"> <span class="time"> <p>(${mensagensChat[i].time})&nbsp</p> </span><span>${mensagensChat[i].from} para Todos &nbsp</span><span>${mensagensChat[i].text}</span></li>`;
+            mensagem.innerHTML += `<li data-test="message" class = "message"> <span class="time"> <p>(${mensagensChat[i].time})&nbsp</p> </span><span class= "remetente">${mensagensChat[i].from} &nbsp</span><span> para Todos &nbsp${mensagensChat[i].text}</span></li>`;
         } else if (mensagensChat[i].type === "status") {
-            mensagem.innerHTML += `<li class = "status"><span class="time"> <p>(${mensagensChat[i].time})&nbsp</p> </span><span>${mensagensChat[i].from} &nbsp</span><span>${mensagensChat[i].text}</span></li> `;
-        } else if (mensagem[i].type === "private-message") {
-            mensagem.innerHTML += `<li class = "privado" <span class="time"> <p>(${mensagensChat[i].time})&nbsp</p> </span><span>${mensagensChat[i].from} &nbsp</span><span>${mensagensChat[i].text}</span></li> `;
+            mensagem.innerHTML += `<li data-test="message" class = "status"><span class="time"> <p>(${mensagensChat[i].time})&nbsp</p> </span><span class="remetente">${mensagensChat[i].from} &nbsp</span><span>${mensagensChat[i].text}</span></li> `;
         }
-        
     }
+    mostrarUltima();
 }

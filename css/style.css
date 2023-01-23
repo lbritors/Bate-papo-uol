@@ -75,7 +75,9 @@ header ion-icon {
 .mensagem li .time {
     color:#AAAAAA;
 }
-
+.mensagem li .remetente {
+    font-weight: 700;
+}
 
 footer {
     width: 100%;
